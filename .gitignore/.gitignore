@@ -1,0 +1,87 @@
+Skip to content
+ 
+Search…
+All gists
+Back to GitHub
+@chriscj137 
+@chhh chhh/.gitignore
+Last active 2 days ago • Report abuse
+39
+30
+ Code Revisions 3 Stars 39 Forks 30
+<script src="https://gist.github.com/chhh/4961200.js"></script>
+  
+.gitignore file for IDEA, Eclipse, NetBeans
+ .gitignore
+#
+# Project specific excludes
+#
+
+tomcat
+
+#
+# Default excludes
+#
+
+# Binaries
+*.7z
+*.dmg
+*.gz
+*.iso
+*.jar
+*.rar
+*.tar
+*.zip
+*.war
+*.ear
+*.sar
+*.class
+
+# Maven 
+target/
+
+# IntelliJ project files 
+*.iml
+*.iws
+*.ipr
+.idea/
+
+# eclipse project file
+.settings/
+.classpath
+.project
+
+# NetBeans specific
+nbproject/private/
+build/
+nbbuild/
+dist/
+nbdist/
+nbactions.xml
+nb-configuration.xml
+
+
+# OS
+.DS_Store
+# Misc
+*.swp
+release.properties
+pom.xml.releaseBackup
+pom.xml.tag
+@chriscj137
+ 
+Leave a comment
+
+Attach files by dragging & dropping, selecting or pasting them.
+© 2020 GitHub, Inc.
+Terms
+Privacy
+Security
+Status
+Help
+Contact GitHub
+Pricing
+API
+Training
+Blog
+About
