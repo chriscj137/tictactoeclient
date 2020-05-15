@@ -4,7 +4,7 @@
  * and open the template in the editor.
  */
 package Frame;
-import AppPackage.AnimationClass;
+//import AppPackage.AnimationClass;
 import java.awt.Color;
 import javax.swing.JOptionPane;
 /**
@@ -264,6 +264,10 @@ public class IniciarSesion extends javax.swing.JFrame {
         Register registro = new Register();
         dispose();
         registro.setVisible(true);
+        
+        // Voy a quitar este codigo. Solo es para pruebas
+        // Game game = new Game();
+        // game.setVisible(true);
     }//GEN-LAST:event_jLabel9MouseClicked
 
     private void jLabel9MouseMoved(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel9MouseMoved
