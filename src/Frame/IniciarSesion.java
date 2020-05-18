@@ -5,8 +5,12 @@
  */
 package Frame;
 //import AppPackage.AnimationClass;
+
+import Socket.Client;
 import java.awt.Color;
+import java.io.IOException;
 import javax.swing.JOptionPane;
+
 /**
  *
  * @author 52333
@@ -20,11 +24,12 @@ public class IniciarSesion extends javax.swing.JFrame {
         initComponents();
         this.setLocationRelativeTo(null);
     }
-    public void OpenRegister(){
-        try{
-            
-        }catch(Exception e){
-            
+
+    public void OpenRegister() {
+        try {
+
+        } catch (Exception e) {
+
         }
     }
 
@@ -81,7 +86,6 @@ public class IniciarSesion extends javax.swing.JFrame {
         jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/icons8_User_96px_2.png"))); // NOI18N
         jpInicio.add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(100, 80, 90, 80));
 
-        Nickname.setBackground(new java.awt.Color(255, 255, 255));
         Nickname.setFont(new java.awt.Font("Felix Titling", 0, 12)); // NOI18N
         Nickname.setForeground(new java.awt.Color(153, 153, 153));
         Nickname.setBorder(null);
@@ -89,7 +93,6 @@ public class IniciarSesion extends javax.swing.JFrame {
         jpInicio.add(jSeparator1, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 380, 240, 20));
         jpInicio.add(jSeparator2, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 260, 240, 20));
 
-        Password.setBackground(new java.awt.Color(255, 255, 255));
         Password.setForeground(new java.awt.Color(153, 153, 153));
         Password.setBorder(null);
         jpInicio.add(Password, new org.netbeans.lib.awtextra.AbsoluteConstraints(70, 340, 200, 40));
@@ -104,10 +107,15 @@ public class IniciarSesion extends javax.swing.JFrame {
         ButtonLogin.setBorder(null);
         ButtonLogin.setBorderPainted(false);
         ButtonLogin.setContentAreaFilled(false);
-        ButtonLogin.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        ButtonLogin.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         ButtonLogin.setRolloverIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/Enter_ON.png"))); // NOI18N
         ButtonLogin.setRolloverSelectedIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/Enter_ON.png"))); // NOI18N
         ButtonLogin.setSelectedIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/Enter_ON.png"))); // NOI18N
+        ButtonLogin.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                ButtonLoginMouseClicked(evt);
+            }
+        });
         jpInicio.add(ButtonLogin, new org.netbeans.lib.awtextra.AbsoluteConstraints(80, 420, -1, -1));
 
         jLabel8.setBackground(new java.awt.Color(238, 112, 32));
@@ -120,7 +128,7 @@ public class IniciarSesion extends javax.swing.JFrame {
         jLabel9.setFont(new java.awt.Font("Felix Titling", 1, 14)); // NOI18N
         jLabel9.setForeground(new java.awt.Color(238, 112, 32));
         jLabel9.setText("Not registered yet?");
-        jLabel9.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        jLabel9.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         jLabel9.addMouseMotionListener(new java.awt.event.MouseMotionAdapter() {
             public void mouseMoved(java.awt.event.MouseEvent evt) {
                 jLabel9MouseMoved(evt);
@@ -194,7 +202,7 @@ public class IniciarSesion extends javax.swing.JFrame {
         jPanel2.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         jLabel14.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/icons8_Multiply_32px.png"))); // NOI18N
-        jLabel14.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        jLabel14.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         jLabel14.addMouseMotionListener(new java.awt.event.MouseMotionAdapter() {
             public void mouseMoved(java.awt.event.MouseEvent evt) {
                 jLabel14MouseMoved(evt);
@@ -211,7 +219,7 @@ public class IniciarSesion extends javax.swing.JFrame {
         jPanel2.add(jLabel14, new org.netbeans.lib.awtextra.AbsoluteConstraints(710, 10, 30, -1));
 
         jLabel15.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/icons8_Expand_Arrow_32px.png"))); // NOI18N
-        jLabel15.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        jLabel15.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         jLabel15.addMouseMotionListener(new java.awt.event.MouseMotionAdapter() {
             public void mouseMoved(java.awt.event.MouseEvent evt) {
                 jLabel15MouseMoved(evt);
@@ -233,38 +241,38 @@ public class IniciarSesion extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jLabel15MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel15MouseClicked
-       this.setState(IniciarSesion.ICONIFIED);
+        this.setState(IniciarSesion.ICONIFIED);
     }//GEN-LAST:event_jLabel15MouseClicked
 
     private void jLabel14MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel14MouseClicked
         int dialog = JOptionPane.YES_NO_OPTION;
-        int result = JOptionPane.showConfirmDialog(null,"Exit?","Exit",dialog);
-        if(result ==0){
+        int result = JOptionPane.showConfirmDialog(null, "Exit?", "Exit", dialog);
+        if (result == 0) {
             System.exit(0);
         }
     }//GEN-LAST:event_jLabel14MouseClicked
 
     private void jLabel15MouseMoved(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel15MouseMoved
-        jLabel15.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153,153,153)));
+        jLabel15.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 153)));
     }//GEN-LAST:event_jLabel15MouseMoved
 
     private void jLabel15MouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel15MouseExited
-         jLabel15.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(255,255,255)));
+        jLabel15.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(255, 255, 255)));
     }//GEN-LAST:event_jLabel15MouseExited
 
     private void jLabel14MouseMoved(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel14MouseMoved
-        jLabel14.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153,153,153)));
+        jLabel14.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 153)));
     }//GEN-LAST:event_jLabel14MouseMoved
 
     private void jLabel14MouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel14MouseExited
-        jLabel14.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(255,255,255)));
+        jLabel14.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(255, 255, 255)));
     }//GEN-LAST:event_jLabel14MouseExited
 
     private void jLabel9MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel9MouseClicked
         Register registro = new Register();
         dispose();
         registro.setVisible(true);
-        
+
         // Voy a quitar este codigo. Solo es para pruebas
         // Game game = new Game();
         // game.setVisible(true);
@@ -275,8 +283,22 @@ public class IniciarSesion extends javax.swing.JFrame {
     }//GEN-LAST:event_jLabel9MouseMoved
 
     private void jLabel9MouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel9MouseExited
-       jLabel9.setForeground(new java.awt.Color(238,112,32));
+        jLabel9.setForeground(new java.awt.Color(238, 112, 32));
     }//GEN-LAST:event_jLabel9MouseExited
+
+    private void ButtonLoginMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_ButtonLoginMouseClicked
+        if (Nickname.getText().equals("") || Password.getPassword().equals("")) {
+            JOptionPane.showMessageDialog(this, "Uno de los campos esta vacio");
+        } else {
+            try {
+                Client.dos.writeUTF("login");
+                Client.dos.writeUTF(Nickname.getText());
+                Client.dos.writeUTF(String.valueOf(Password.getPassword()));
+            } catch (IOException ex) {
+                System.out.println("LOL");
+            }
+        }
+    }//GEN-LAST:event_ButtonLoginMouseClicked
 
     /**
      * @param args the command line arguments
@@ -285,7 +307,7 @@ public class IniciarSesion extends javax.swing.JFrame {
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
         /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
+         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html
          */
         try {
             for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
@@ -306,10 +328,8 @@ public class IniciarSesion extends javax.swing.JFrame {
         //</editor-fold>
 
         /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new IniciarSesion().setVisible(true);
-            }
+        java.awt.EventQueue.invokeLater(() -> {
+            new IniciarSesion().setVisible(true);
         });
     }
 
