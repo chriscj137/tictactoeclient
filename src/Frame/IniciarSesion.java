@@ -269,13 +269,10 @@ public class IniciarSesion extends javax.swing.JFrame {
     }//GEN-LAST:event_jLabel14MouseExited
 
     private void jLabel9MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel9MouseClicked
+        // Debo quitar estos comentarios
         Register registro = new Register();
         dispose();
         registro.setVisible(true);
-
-        // Voy a quitar este codigo. Solo es para pruebas
-        // Game game = new Game();
-        // game.setVisible(true);
     }//GEN-LAST:event_jLabel9MouseClicked
 
     private void jLabel9MouseMoved(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel9MouseMoved
@@ -287,6 +284,10 @@ public class IniciarSesion extends javax.swing.JFrame {
     }//GEN-LAST:event_jLabel9MouseExited
 
     private void ButtonLoginMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_ButtonLoginMouseClicked
+        Dashboard dash = new Dashboard();
+        dispose();
+        dash.setVisible(true);
+        
         if (Nickname.getText().equals("") || Password.getPassword().equals("")) {
             JOptionPane.showMessageDialog(this, "Uno de los campos esta vacio");
         } else {
