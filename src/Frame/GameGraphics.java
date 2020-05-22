@@ -8,6 +8,7 @@ package Frame;
 import Play.Game;
 import Play.Bot;
 import Play.Move;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -114,8 +115,38 @@ public class GameGraphics extends javax.swing.JFrame {
         if (move.getRow() == 2 && move.getCol() == 1) square7.setIcon(new javax.swing.ImageIcon(getClass().getResource(resource)));
         if (move.getRow() == 2 && move.getCol() == 2) square8.setIcon(new javax.swing.ImageIcon(getClass().getResource(resource)));
         
+        evaluateGame();
+        
         turn = true;
         setTurnText();
+    }
+    
+    public void evaluateGame() 
+    {
+        if (game.evaluation() != 0 || game.isOver()) 
+        {
+            if (game.evaluation() == -1)
+            {
+                if (player == 'O') 
+                {
+                    JOptionPane.showMessageDialog(this, "Ganaste");
+                } else 
+                {
+                    JOptionPane.showMessageDialog(this, "Perdiste");
+                }
+            } else if (game.evaluation() == 1)
+            {
+                if (player == 'X') 
+                {
+                    JOptionPane.showMessageDialog(this, "Ganaste");
+                } else 
+                {
+                    JOptionPane.showMessageDialog(this, "Perdiste");
+                }
+            } else if (game.isOver() && (game.evaluation() != 1 && game.evaluation() != -1)) {
+                JOptionPane.showMessageDialog(this, "Es un empate");
+            }
+        }
     }
 
     /**
@@ -376,6 +407,7 @@ public class GameGraphics extends javax.swing.JFrame {
             
             turn = false;
             setTurnText();
+            evaluateGame();
             getMove();
         }
         
@@ -396,6 +428,7 @@ public class GameGraphics extends javax.swing.JFrame {
             
             turn = false;
             setTurnText();
+            evaluateGame();
             getMove();
         }
     }//GEN-LAST:event_square1MouseClicked
@@ -415,6 +448,7 @@ public class GameGraphics extends javax.swing.JFrame {
             
             turn = false;
             setTurnText();
+            evaluateGame();
             getMove();
         }
     }//GEN-LAST:event_square2MouseClicked
@@ -434,6 +468,7 @@ public class GameGraphics extends javax.swing.JFrame {
             
             turn = false;
             setTurnText();
+            evaluateGame();
             getMove();
         }
     }//GEN-LAST:event_square3MouseClicked
@@ -453,6 +488,7 @@ public class GameGraphics extends javax.swing.JFrame {
             
             turn = false;
             setTurnText();
+            evaluateGame();
             getMove();
         }
     }//GEN-LAST:event_square4MouseClicked
@@ -472,6 +508,7 @@ public class GameGraphics extends javax.swing.JFrame {
             
             turn = false;
             setTurnText();
+            evaluateGame();
             getMove();
         }
     }//GEN-LAST:event_square5MouseClicked
@@ -491,6 +528,7 @@ public class GameGraphics extends javax.swing.JFrame {
             
             turn = false;
             setTurnText();
+            evaluateGame();
             getMove();
         }
     }//GEN-LAST:event_square6MouseClicked
@@ -510,6 +548,7 @@ public class GameGraphics extends javax.swing.JFrame {
             
             turn = false;
             setTurnText();
+            evaluateGame();
             getMove();
         }
     }//GEN-LAST:event_square7MouseClicked
@@ -529,6 +568,7 @@ public class GameGraphics extends javax.swing.JFrame {
             
             turn = false;
             setTurnText();
+            evaluateGame();
             getMove();
         }
     }//GEN-LAST:event_square8MouseClicked

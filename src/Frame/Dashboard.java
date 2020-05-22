@@ -9,6 +9,7 @@ import Socket.Client;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.io.IOException;
 import javax.swing.table.TableCellRenderer;
 
 /**
@@ -17,16 +18,17 @@ import javax.swing.table.TableCellRenderer;
  */
 public class Dashboard extends javax.swing.JFrame {
 
-    private Client client;
+    private final Client client;
 
     /**
      * Creates new form Dashboard
      *
      * @param client
      */
-    public Dashboard() {
-        initComponents();
+    public Dashboard(Client client) {
+        this.client = client;
 
+        initComponents();
         TableCellRenderer baseRenderer = jTable1.getTableHeader().getDefaultRenderer();
         jTable1.getTableHeader().setDefaultRenderer(new TableHeaderRenderer(baseRenderer));
         jTable1.getTableHeader().setFont(new Font("Leelawadee UI", Font.PLAIN, 14));
@@ -45,6 +47,21 @@ public class Dashboard extends javax.swing.JFrame {
         jTable2.getTableHeader().setPreferredSize(new Dimension(jTable2.getWidth(), 60));
         jTable2.setRowHeight(60);
 
+        //getHistory();
+    }
+
+    private void getHistory() {
+
+        try {
+            client.dos.writeUTF("history");
+            int amount = client.dis.readInt();
+            client.dos.writeBoolean(true);
+            for (int i = 0; i < amount; i++) {
+                System.out.println(client.dis.readUTF());
+            }
+        } catch (IOException ex) {
+            System.out.println("LOL");
+        }
     }
 
     /**
@@ -338,4 +355,5 @@ public class Dashboard extends javax.swing.JFrame {
     private javax.swing.JTable jTable1;
     private javax.swing.JTable jTable2;
     // End of variables declaration//GEN-END:variables
+
 }

@@ -9,7 +9,6 @@ package Frame;
 import Socket.Client;
 import java.awt.Color;
 import java.io.IOException;
-import java.net.SocketTimeoutException;
 import javax.swing.JOptionPane;
 
 /**
@@ -123,6 +122,11 @@ public class IniciarSesion extends javax.swing.JFrame {
         ButtonLogin.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 ButtonLoginMouseClicked(evt);
+            }
+        });
+        ButtonLogin.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                ButtonLoginActionPerformed(evt);
             }
         });
         jpInicio.add(ButtonLogin, new org.netbeans.lib.awtextra.AbsoluteConstraints(80, 420, -1, -1));
@@ -305,7 +309,7 @@ public class IniciarSesion extends javax.swing.JFrame {
                 Boolean successful = client.dis.readBoolean();
 
                 if (successful) {
-                    Dashboard dash = new Dashboard();
+                    Dashboard dash = new Dashboard(client);
                     dispose();
                     dash.setVisible(true);
                 }
@@ -314,6 +318,10 @@ public class IniciarSesion extends javax.swing.JFrame {
             }
         }
     }//GEN-LAST:event_ButtonLoginMouseClicked
+
+    private void ButtonLoginActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ButtonLoginActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_ButtonLoginActionPerformed
 
     /**
      * @param args the command line arguments
