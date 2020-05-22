@@ -305,7 +305,8 @@ public class IniciarSesion extends javax.swing.JFrame {
                 Boolean successful = client.dis.readBoolean();
 
                 if (successful) {
-                    Dashboard dash = new Dashboard();
+                    client.clientName = Nickname.getText();
+                    Dashboard dash = new Dashboard(client);
                     dispose();
                     dash.setVisible(true);
                 }

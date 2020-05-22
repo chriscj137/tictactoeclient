@@ -20,6 +20,8 @@ public class Client {
     public Socket socket;
     public DataOutputStream dos;
     public DataInputStream dis;
+    
+    public String clientName;
 
     public Client(InetAddress ip, int port) throws IOException {
         socket = new Socket(ip, port);

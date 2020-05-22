@@ -10,6 +10,8 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import javax.swing.table.TableCellRenderer;
+import java.io.IOException;
+import javax.swing.table.DefaultTableModel;
 
 /**
  *
@@ -24,7 +26,8 @@ public class Dashboard extends javax.swing.JFrame {
      *
      * @param client
      */
-    public Dashboard() {
+    public Dashboard(Client client) {
+        this.client = client;
         initComponents();
 
         TableCellRenderer baseRenderer = jTable1.getTableHeader().getDefaultRenderer();
@@ -45,6 +48,55 @@ public class Dashboard extends javax.swing.JFrame {
         jTable2.getTableHeader().setPreferredSize(new Dimension(jTable2.getWidth(), 60));
         jTable2.setRowHeight(60);
 
+        getRecords();
+    }
+    
+    private void getRecords() {
+        DefaultTableModel model = new DefaultTableModel();
+        
+        model.addColumn("Jugador X");
+        model.addColumn("Jugador O");
+        model.addColumn("Resultado");
+        
+        try {
+            client.dos.writeUTF("record"); 
+            
+            int size = client.dis.readInt();
+            
+            for (int i = 0; i < size; ++i) {
+                String record = client.dis.readUTF();
+                String[] data = record.split("\n");
+                String res;
+                String space = "     ";
+                
+                if (data[3].equals("PlayerXWin")) {
+                    if (data[1].equals(client.clientName)) {
+                        res = "Ganaste";
+                    } else {
+                        res = "Perdiste";
+                    }
+                } else if (data[3].equals("PlayerOWin")) {
+                    if (data[2].equals(client.clientName)) {
+                        res = "Ganaste";
+                    } else {
+                        res = "Perdiste";
+                    }
+                } else {
+                    res = "Empate";
+                }
+                
+                System.out.println(data[1]);
+                System.out.println(data[2]);
+                System.out.println(data[3]);
+                
+                model.addRow(new Object[]{space + data[1], space + data[2], space + res});
+            }
+            jTable2.setModel(model);
+            
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+        
     }
 
     /**
@@ -225,23 +277,18 @@ public class Dashboard extends javax.swing.JFrame {
         jTable2.setForeground(new java.awt.Color(94, 94, 94));
         jTable2.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {"     Angel33", "     Mauricio", "     Victoria"},
-                {"     Mauricio", "     Angel33", "     Empate"},
-                {"     Cris", "     Angel33", "    Empate"},
-                {"     Cris", "     Angel33", "     Derrota"},
-                {"     Angel33", "     Cris", "    Victoria"},
-                {"     Angel33", "     Mauricio", "    Derrota"}
+
             },
             new String [] {
                 "Jugador X", "Jugador O", "Resultado"
             }
         ) {
-            Class[] types = new Class [] {
-                java.lang.String.class, java.lang.String.class, java.lang.String.class
+            boolean[] canEdit = new boolean [] {
+                false, false, false
             };
 
-            public Class getColumnClass(int columnIndex) {
-                return types [columnIndex];
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
             }
         });
         jTable2.setFocusable(false);

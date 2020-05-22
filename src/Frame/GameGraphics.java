@@ -8,6 +8,7 @@ package Frame;
 import Play.Game;
 import Play.Bot;
 import Play.Move;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -93,7 +94,7 @@ public class GameGraphics extends javax.swing.JFrame {
         String resource = "/Images/cross.png";
         Move move = new Move();
         
-        if (!isOnLine) {
+        if (!isOnLine && !game.isOver()) {
             move = bot.findBestMove(game);
             game.move(move.getRow(), move.getCol(), bot.getPlayer());
         
@@ -103,19 +104,49 @@ public class GameGraphics extends javax.swing.JFrame {
                 resource = "/Images/circle.png";
         }
 
-        
-        if (move.getRow() == 0 && move.getCol() == 0) square0.setIcon(new javax.swing.ImageIcon(getClass().getResource(resource)));
-        if (move.getRow() == 0 && move.getCol() == 1) square1.setIcon(new javax.swing.ImageIcon(getClass().getResource(resource)));
-        if (move.getRow() == 0 && move.getCol() == 2) square2.setIcon(new javax.swing.ImageIcon(getClass().getResource(resource)));
-        if (move.getRow() == 1 && move.getCol() == 0) square3.setIcon(new javax.swing.ImageIcon(getClass().getResource(resource)));
-        if (move.getRow() == 1 && move.getCol() == 1) square4.setIcon(new javax.swing.ImageIcon(getClass().getResource(resource)));
-        if (move.getRow() == 1 && move.getCol() == 2) square5.setIcon(new javax.swing.ImageIcon(getClass().getResource(resource)));
-        if (move.getRow() == 2 && move.getCol() == 0) square6.setIcon(new javax.swing.ImageIcon(getClass().getResource(resource)));
-        if (move.getRow() == 2 && move.getCol() == 1) square7.setIcon(new javax.swing.ImageIcon(getClass().getResource(resource)));
-        if (move.getRow() == 2 && move.getCol() == 2) square8.setIcon(new javax.swing.ImageIcon(getClass().getResource(resource)));
-        
-        turn = true;
-        setTurnText();
+        if (!game.isOver()) {
+            if (move.getRow() == 0 && move.getCol() == 0) square0.setIcon(new javax.swing.ImageIcon(getClass().getResource(resource)));
+            if (move.getRow() == 0 && move.getCol() == 1) square1.setIcon(new javax.swing.ImageIcon(getClass().getResource(resource)));
+            if (move.getRow() == 0 && move.getCol() == 2) square2.setIcon(new javax.swing.ImageIcon(getClass().getResource(resource)));
+            if (move.getRow() == 1 && move.getCol() == 0) square3.setIcon(new javax.swing.ImageIcon(getClass().getResource(resource)));
+            if (move.getRow() == 1 && move.getCol() == 1) square4.setIcon(new javax.swing.ImageIcon(getClass().getResource(resource)));
+            if (move.getRow() == 1 && move.getCol() == 2) square5.setIcon(new javax.swing.ImageIcon(getClass().getResource(resource)));
+            if (move.getRow() == 2 && move.getCol() == 0) square6.setIcon(new javax.swing.ImageIcon(getClass().getResource(resource)));
+            if (move.getRow() == 2 && move.getCol() == 1) square7.setIcon(new javax.swing.ImageIcon(getClass().getResource(resource)));
+            if (move.getRow() == 2 && move.getCol() == 2) square8.setIcon(new javax.swing.ImageIcon(getClass().getResource(resource)));
+
+            evaluateGame();
+            turn = true;
+            setTurnText();
+        }
+    }
+    
+    public void evaluateGame() 
+    {
+        if (game.evaluation() != 0 || game.isOver()) 
+        {
+            if (game.evaluation() == -1)
+            {
+                if (player == 'O') 
+                {
+                    JOptionPane.showMessageDialog(this, "Ganaste");
+                } else 
+                {
+                    JOptionPane.showMessageDialog(this, "Perdiste");
+                }
+            } else if (game.evaluation() == 1)
+            {
+                if (player == 'X') 
+                {
+                    JOptionPane.showMessageDialog(this, "Ganaste");
+                } else 
+                {
+                    JOptionPane.showMessageDialog(this, "Perdiste");
+                }
+            } else if (game.isOver() && (game.evaluation() != 1 && game.evaluation() != -1)) {
+                JOptionPane.showMessageDialog(this, "Es un empate");
+            }
+        }
     }
 
     /**
@@ -396,6 +427,7 @@ public class GameGraphics extends javax.swing.JFrame {
             
             turn = false;
             setTurnText();
+            evaluateGame();
             getMove();
         }
     }//GEN-LAST:event_square1MouseClicked
@@ -415,6 +447,7 @@ public class GameGraphics extends javax.swing.JFrame {
             
             turn = false;
             setTurnText();
+            evaluateGame();
             getMove();
         }
     }//GEN-LAST:event_square2MouseClicked
@@ -434,6 +467,7 @@ public class GameGraphics extends javax.swing.JFrame {
             
             turn = false;
             setTurnText();
+            evaluateGame();
             getMove();
         }
     }//GEN-LAST:event_square3MouseClicked
@@ -453,6 +487,7 @@ public class GameGraphics extends javax.swing.JFrame {
             
             turn = false;
             setTurnText();
+            evaluateGame();
             getMove();
         }
     }//GEN-LAST:event_square4MouseClicked
@@ -472,6 +507,7 @@ public class GameGraphics extends javax.swing.JFrame {
             
             turn = false;
             setTurnText();
+            evaluateGame();
             getMove();
         }
     }//GEN-LAST:event_square5MouseClicked
@@ -491,6 +527,7 @@ public class GameGraphics extends javax.swing.JFrame {
             
             turn = false;
             setTurnText();
+            evaluateGame();
             getMove();
         }
     }//GEN-LAST:event_square6MouseClicked
@@ -510,6 +547,7 @@ public class GameGraphics extends javax.swing.JFrame {
             
             turn = false;
             setTurnText();
+            evaluateGame();
             getMove();
         }
     }//GEN-LAST:event_square7MouseClicked
@@ -529,6 +567,7 @@ public class GameGraphics extends javax.swing.JFrame {
             
             turn = false;
             setTurnText();
+            evaluateGame();
             getMove();
         }
     }//GEN-LAST:event_square8MouseClicked
