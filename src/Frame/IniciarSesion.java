@@ -116,6 +116,11 @@ public class IniciarSesion extends javax.swing.JFrame {
                 ButtonLoginMouseClicked(evt);
             }
         });
+        ButtonLogin.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                ButtonLoginActionPerformed(evt);
+            }
+        });
         jpInicio.add(ButtonLogin, new org.netbeans.lib.awtextra.AbsoluteConstraints(80, 420, -1, -1));
 
         jLabel8.setBackground(new java.awt.Color(238, 112, 32));
@@ -284,6 +289,7 @@ public class IniciarSesion extends javax.swing.JFrame {
     }//GEN-LAST:event_jLabel9MouseExited
 
     private void ButtonLoginMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_ButtonLoginMouseClicked
+        
         Dashboard dash = new Dashboard();
         dispose();
         dash.setVisible(true);
@@ -300,6 +306,10 @@ public class IniciarSesion extends javax.swing.JFrame {
             }
         }
     }//GEN-LAST:event_ButtonLoginMouseClicked
+
+    private void ButtonLoginActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ButtonLoginActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_ButtonLoginActionPerformed
 
     /**
      * @param args the command line arguments
