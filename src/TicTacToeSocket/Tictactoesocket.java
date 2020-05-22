@@ -22,12 +22,10 @@ public class Tictactoesocket {
 
         InetAddress ip = InetAddress.getByName("localhost");
         int port = 5056;
-        //client = new Client(ip, port);
+        client = new Client(ip, port);
         /* Create and display the form */
-        //java.awt.EventQueue.invokeLater(() -> {
-        //    new IniciarSesion().setVisible(true);
-        //});
-        IniciarSesion sesion = new IniciarSesion();
-        sesion.setVisible(true);
+        java.awt.EventQueue.invokeLater(() -> {
+            new IniciarSesion().setVisible(true);
+        });
     }
 }
