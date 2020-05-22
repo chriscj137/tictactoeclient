@@ -9,6 +9,7 @@ package Frame;
 import Socket.Client;
 import java.awt.Color;
 import java.io.IOException;
+import java.net.SocketTimeoutException;
 import javax.swing.JOptionPane;
 
 /**
@@ -17,10 +18,18 @@ import javax.swing.JOptionPane;
  */
 public class IniciarSesion extends javax.swing.JFrame {
 
+    private Client client;
+
     /**
      * Creates new form IniciarSesion
      */
     public IniciarSesion() {
+        initComponents();
+        this.setLocationRelativeTo(null);
+    }
+
+    public IniciarSesion(Client client) {
+        this.client = client;
         initComponents();
         this.setLocationRelativeTo(null);
     }
@@ -284,19 +293,24 @@ public class IniciarSesion extends javax.swing.JFrame {
     }//GEN-LAST:event_jLabel9MouseExited
 
     private void ButtonLoginMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_ButtonLoginMouseClicked
-        Dashboard dash = new Dashboard();
-        dispose();
-        dash.setVisible(true);
-        
-        if (Nickname.getText().equals("") || Password.getPassword().equals("")) {
+
+        if (Nickname.getText().length() == 0 || Password.getPassword().length == 0) {
             JOptionPane.showMessageDialog(this, "Uno de los campos esta vacio");
         } else {
             try {
-                Client.dos.writeUTF("login");
-                Client.dos.writeUTF(Nickname.getText());
-                Client.dos.writeUTF(String.valueOf(Password.getPassword()));
+                client.dos.writeUTF("login");
+                client.dos.writeUTF(Nickname.getText());
+                client.dos.writeUTF(String.valueOf(Password.getPassword()));
+
+                Boolean successful = client.dis.readBoolean();
+
+                if (successful) {
+                    Dashboard dash = new Dashboard();
+                    dispose();
+                    dash.setVisible(true);
+                }
             } catch (IOException ex) {
-                System.out.println("LOL");
+                ex.printStackTrace();
             }
         }
     }//GEN-LAST:event_ButtonLoginMouseClicked

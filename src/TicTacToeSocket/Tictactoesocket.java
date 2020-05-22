@@ -16,18 +16,16 @@ import java.net.InetAddress;
  */
 public class Tictactoesocket {
 
-    public static Client client;
-
     public static void main(String args[]) throws IOException {
 
         InetAddress ip = InetAddress.getByName("localhost");
         int port = 5056;
-        //client = new Client(ip, port);
+        Client client = new Client(ip, port);
         /* Create and display the form */
         //java.awt.EventQueue.invokeLater(() -> {
         //    new IniciarSesion().setVisible(true);
         //});
-        IniciarSesion sesion = new IniciarSesion();
+        IniciarSesion sesion = new IniciarSesion(client);
         sesion.setVisible(true);
     }
 }

@@ -185,13 +185,15 @@ public class Register extends javax.swing.JFrame {
     }//GEN-LAST:event_jLabel15MouseExited
 
     private void ButtonLoginMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_ButtonLoginMouseClicked
-        if (Nickname.getText().equals("") || Password.getPassword().equals("")) {
+
+        /*if (Nickname.getText().equals("") || Password.getPassword().equals("")) {
             JOptionPane.showMessageDialog(this, "Uno de los campos esta vacio");
         } else {
             try {
                 Client.dos.writeUTF("register");
                 Client.dos.writeUTF(Nickname.getText());
                 Client.dos.writeUTF(String.valueOf(Password.getPassword()));
+
             } catch (IOException ex) {
                 System.out.println("LOL");
             }
@@ -199,6 +201,7 @@ public class Register extends javax.swing.JFrame {
             dispose();
             inicio.setVisible(true);
         }
+         */
     }//GEN-LAST:event_ButtonLoginMouseClicked
 
     /**

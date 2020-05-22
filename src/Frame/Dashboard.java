@@ -5,11 +5,10 @@
  */
 package Frame;
 
+import Socket.Client;
 import java.awt.Color;
 import java.awt.Dimension;
-import javax.swing.BorderFactory;
 import java.awt.Font;
-import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
 
 /**
@@ -18,12 +17,16 @@ import javax.swing.table.TableCellRenderer;
  */
 public class Dashboard extends javax.swing.JFrame {
 
+    private Client client;
+
     /**
      * Creates new form Dashboard
+     *
+     * @param client
      */
     public Dashboard() {
         initComponents();
-        
+
         TableCellRenderer baseRenderer = jTable1.getTableHeader().getDefaultRenderer();
         jTable1.getTableHeader().setDefaultRenderer(new TableHeaderRenderer(baseRenderer));
         jTable1.getTableHeader().setFont(new Font("Leelawadee UI", Font.PLAIN, 14));
@@ -32,7 +35,7 @@ public class Dashboard extends javax.swing.JFrame {
         jTable1.getTableHeader().setForeground(new Color(118, 117, 116));
         jTable1.getTableHeader().setPreferredSize(new Dimension(jTable1.getWidth(), 60));
         jTable1.setRowHeight(60);
-        
+
         baseRenderer = jTable2.getTableHeader().getDefaultRenderer();
         jTable2.getTableHeader().setDefaultRenderer(new TableHeaderRenderer(baseRenderer));
         jTable2.getTableHeader().setFont(new Font("Leelawadee UI", Font.PLAIN, 14));
@@ -41,7 +44,7 @@ public class Dashboard extends javax.swing.JFrame {
         jTable2.getTableHeader().setForeground(new Color(118, 117, 116));
         jTable2.getTableHeader().setPreferredSize(new Dimension(jTable2.getWidth(), 60));
         jTable2.setRowHeight(60);
-        
+
     }
 
     /**
@@ -91,6 +94,7 @@ public class Dashboard extends javax.swing.JFrame {
         jLabel1.setForeground(new java.awt.Color(255, 255, 255));
         jLabel1.setText("Angel33");
         jPanel5.add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(140, 20, 210, 70));
+        jLabel1.getAccessibleContext().setAccessibleDescription("");
 
         jPanel2.setBackground(new java.awt.Color(255, 255, 255));
         jPanel2.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(255, 99, 71), 1, true));
@@ -281,7 +285,7 @@ public class Dashboard extends javax.swing.JFrame {
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
         /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
+         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html
          */
         try {
             for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
@@ -302,11 +306,13 @@ public class Dashboard extends javax.swing.JFrame {
         //</editor-fold>
 
         /* Create and display the form */
+ /*
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new Dashboard().setVisible(true);
+                new Dashboard(client).setVisible(true);
             }
         });
+         */
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -333,5 +339,3 @@ public class Dashboard extends javax.swing.JFrame {
     private javax.swing.JTable jTable2;
     // End of variables declaration//GEN-END:variables
 }
-
-

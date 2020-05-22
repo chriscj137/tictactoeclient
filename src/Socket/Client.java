@@ -5,6 +5,7 @@
  */
 package Socket;
 
+import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.InetAddress;
@@ -16,11 +17,14 @@ import java.net.Socket;
  */
 public class Client {
 
-    public static Socket socket;
-    public static DataOutputStream dos;
+    public Socket socket;
+    public DataOutputStream dos;
+    public DataInputStream dis;
 
     public Client(InetAddress ip, int port) throws IOException {
         socket = new Socket(ip, port);
         dos = new DataOutputStream(socket.getOutputStream());
+        dis = new DataInputStream(socket.getInputStream());
+        socket.setSoTimeout(3 * 1000);
     }
 }
