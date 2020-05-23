@@ -6,7 +6,11 @@
 package Frame;
 
 import Socket.Client;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 
 /**
@@ -15,12 +19,29 @@ import javax.swing.JOptionPane;
  */
 public class Register extends javax.swing.JFrame {
 
+    Client client;
+
     /**
      * Creates new form Register
      */
-    public Register() {
+    public Register(Client client) {
         initComponents();
+        this.client = client;
         this.setLocationRelativeTo(null);
+        this.addWindowListener(new WindowAdapter() {
+            public void windowClosing(WindowEvent e) {
+                int dialog = JOptionPane.YES_NO_OPTION;
+                int result = JOptionPane.showConfirmDialog(null, "Exit?", "Exit", dialog);
+                if (result == 0) {
+                    try {
+                        client.dos.writeUTF("exit");
+                    } catch (IOException ex) {
+                        ex.printStackTrace();
+                    }
+                    System.exit(0);
+                }
+            }
+        });
     }
 
     /**
@@ -44,12 +65,10 @@ public class Register extends javax.swing.JFrame {
         jSeparator4 = new javax.swing.JSeparator();
         jLabel10 = new javax.swing.JLabel();
         ButtonLogin = new javax.swing.JButton();
-        jPanel2 = new javax.swing.JPanel();
-        jLabel14 = new javax.swing.JLabel();
         jLabel15 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setUndecorated(true);
+        setResizable(false);
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         jPanel1.setBackground(new java.awt.Color(255, 255, 255));
@@ -109,33 +128,17 @@ public class Register extends javax.swing.JFrame {
                 ButtonLoginMouseClicked(evt);
             }
         });
+        ButtonLogin.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                ButtonLoginActionPerformed(evt);
+            }
+        });
         jPanel1.add(ButtonLogin, new org.netbeans.lib.awtextra.AbsoluteConstraints(310, 420, -1, 40));
 
-        getContentPane().add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 50, 760, 530));
-
-        jPanel2.setBackground(new java.awt.Color(255, 255, 255));
-        jPanel2.setForeground(new java.awt.Color(255, 255, 255));
-        jPanel2.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
-
-        jLabel14.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/icons8_Multiply_32px.png"))); // NOI18N
-        jLabel14.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
-        jLabel14.addMouseMotionListener(new java.awt.event.MouseMotionAdapter() {
-            public void mouseMoved(java.awt.event.MouseEvent evt) {
-                jLabel14MouseMoved(evt);
-            }
-        });
-        jLabel14.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                jLabel14MouseClicked(evt);
-            }
-            public void mouseExited(java.awt.event.MouseEvent evt) {
-                jLabel14MouseExited(evt);
-            }
-        });
-        jPanel2.add(jLabel14, new org.netbeans.lib.awtextra.AbsoluteConstraints(710, 10, 30, -1));
-
-        jLabel15.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/icons8_Expand_Arrow_32px.png"))); // NOI18N
+        jLabel15.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/icons8_Back_64px.png"))); // NOI18N
         jLabel15.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
+        jLabel15.setMaximumSize(new java.awt.Dimension(32, 32));
+        jLabel15.setMinimumSize(new java.awt.Dimension(32, 32));
         jLabel15.addMouseMotionListener(new java.awt.event.MouseMotionAdapter() {
             public void mouseMoved(java.awt.event.MouseEvent evt) {
                 jLabel15MouseMoved(evt);
@@ -149,60 +152,60 @@ public class Register extends javax.swing.JFrame {
                 jLabel15MouseExited(evt);
             }
         });
-        jPanel2.add(jLabel15, new org.netbeans.lib.awtextra.AbsoluteConstraints(670, 10, 30, 30));
+        jPanel1.add(jLabel15, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 10, -1, 50));
 
-        getContentPane().add(jPanel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 760, 50));
+        getContentPane().add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 760, 530));
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jLabel14MouseMoved(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel14MouseMoved
-        jLabel14.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 153)));
-    }//GEN-LAST:event_jLabel14MouseMoved
+    private void ButtonLoginMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_ButtonLoginMouseClicked
 
-    private void jLabel14MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel14MouseClicked
-        int dialog = JOptionPane.YES_NO_OPTION;
-        int result = JOptionPane.showConfirmDialog(null, "Exit?", "Exit", dialog);
-        if (result == 0) {
-            System.exit(0);
+        if (Nickname.getText().equals("") || Password.getPassword().equals("")) {
+            JOptionPane.showMessageDialog(this, "Uno de los campos esta vacio");
+        } else {
+            try {
+                client.dos.writeUTF("register");
+                client.dos.writeUTF(Nickname.getText());
+                client.dos.writeUTF(String.valueOf(Password.getPassword()));
+
+                if (client.dis.readBoolean()) {
+                    int dialog = JOptionPane.INFORMATION_MESSAGE;
+                    JOptionPane.showMessageDialog(null, "Su usuario ha sido registrado correctamente", "Registro", dialog);
+
+                    IniciarSesion inicio = new IniciarSesion(client);
+                    dispose();
+                    inicio.setVisible(true);
+                } else {
+                    int dialog = JOptionPane.ERROR_MESSAGE;
+                    JOptionPane.showMessageDialog(null, "Usuario ya existe", "Error", dialog);
+
+                }
+            } catch (IOException ex) {
+                Logger.getLogger(Register.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
-    }//GEN-LAST:event_jLabel14MouseClicked
+    }//GEN-LAST:event_ButtonLoginMouseClicked
 
-    private void jLabel14MouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel14MouseExited
-        jLabel14.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(255, 255, 255)));
-    }//GEN-LAST:event_jLabel14MouseExited
-
-    private void jLabel15MouseMoved(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel15MouseMoved
-        jLabel15.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 153)));
-    }//GEN-LAST:event_jLabel15MouseMoved
-
-    private void jLabel15MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel15MouseClicked
-        this.setState(IniciarSesion.ICONIFIED);
-    }//GEN-LAST:event_jLabel15MouseClicked
+    private void ButtonLoginActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ButtonLoginActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_ButtonLoginActionPerformed
 
     private void jLabel15MouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel15MouseExited
         jLabel15.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(255, 255, 255)));
     }//GEN-LAST:event_jLabel15MouseExited
 
-    private void ButtonLoginMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_ButtonLoginMouseClicked
+    private void jLabel15MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel15MouseClicked
+        this.setState(IniciarSesion.ICONIFIED);
 
-        /*if (Nickname.getText().equals("") || Password.getPassword().equals("")) {
-            JOptionPane.showMessageDialog(this, "Uno de los campos esta vacio");
-        } else {
-            try {
-                Client.dos.writeUTF("register");
-                Client.dos.writeUTF(Nickname.getText());
-                Client.dos.writeUTF(String.valueOf(Password.getPassword()));
+        IniciarSesion iniciarSesion = new IniciarSesion(client);
+        dispose();
+        iniciarSesion.setVisible(true);
+    }//GEN-LAST:event_jLabel15MouseClicked
 
-            } catch (IOException ex) {
-                System.out.println("LOL");
-            }
-            IniciarSesion inicio = new IniciarSesion();
-            dispose();
-            inicio.setVisible(true);
-        }
-         */
-    }//GEN-LAST:event_ButtonLoginMouseClicked
+    private void jLabel15MouseMoved(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel15MouseMoved
+        jLabel15.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 153)));
+    }//GEN-LAST:event_jLabel15MouseMoved
 
     /**
      * @param args the command line arguments
@@ -232,9 +235,11 @@ public class Register extends javax.swing.JFrame {
         //</editor-fold>
 
         /* Create and display the form */
+ /*
         java.awt.EventQueue.invokeLater(() -> {
             new Register().setVisible(true);
         });
+         */
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -243,14 +248,12 @@ public class Register extends javax.swing.JFrame {
     private javax.swing.JPasswordField Password;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
-    private javax.swing.JLabel jLabel14;
     private javax.swing.JLabel jLabel15;
     private javax.swing.JLabel jLabel16;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
     private javax.swing.JPanel jPanel1;
-    private javax.swing.JPanel jPanel2;
     private javax.swing.JSeparator jSeparator3;
     private javax.swing.JSeparator jSeparator4;
     // End of variables declaration//GEN-END:variables

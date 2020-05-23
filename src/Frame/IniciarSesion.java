@@ -8,8 +8,13 @@ package Frame;
 
 import Socket.Client;
 import java.awt.Color;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JOptionPane;
+import tictactoe.Models.GameUser;
 
 /**
  *
@@ -21,16 +26,27 @@ public class IniciarSesion extends javax.swing.JFrame {
 
     /**
      * Creates new form IniciarSesion
+     *
+     * @param client
      */
-    public IniciarSesion() {
-        initComponents();
-        this.setLocationRelativeTo(null);
-    }
-
     public IniciarSesion(Client client) {
         this.client = client;
         initComponents();
         this.setLocationRelativeTo(null);
+        this.addWindowListener(new WindowAdapter() {
+            public void windowClosing(WindowEvent e) {
+                int dialog = JOptionPane.YES_NO_OPTION;
+                int result = JOptionPane.showConfirmDialog(null, "Exit?", "Exit", dialog);
+                if (result == 0) {
+                    try {
+                        client.dos.writeUTF("exit");
+                    } catch (IOException ex) {
+                        ex.printStackTrace();
+                    }
+                    System.exit(0);
+                }
+            }
+        });
     }
 
     public void OpenRegister() {
@@ -71,12 +87,8 @@ public class IniciarSesion extends javax.swing.JFrame {
         jLabel11 = new javax.swing.JLabel();
         jLabel12 = new javax.swing.JLabel();
         jLabel13 = new javax.swing.JLabel();
-        jPanel2 = new javax.swing.JPanel();
-        jLabel14 = new javax.swing.JLabel();
-        jLabel15 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setUndecorated(true);
         setResizable(false);
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
@@ -208,82 +220,14 @@ public class IniciarSesion extends javax.swing.JFrame {
         jLabel13.setText("By:");
         jPanel1.add(jLabel13, new org.netbeans.lib.awtextra.AbsoluteConstraints(100, 410, -1, 20));
 
-        getContentPane().add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(290, 50, 760, 530));
-
-        jPanel2.setBackground(new java.awt.Color(255, 255, 255));
-        jPanel2.setForeground(new java.awt.Color(255, 255, 255));
-        jPanel2.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
-
-        jLabel14.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/icons8_Multiply_32px.png"))); // NOI18N
-        jLabel14.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
-        jLabel14.addMouseMotionListener(new java.awt.event.MouseMotionAdapter() {
-            public void mouseMoved(java.awt.event.MouseEvent evt) {
-                jLabel14MouseMoved(evt);
-            }
-        });
-        jLabel14.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                jLabel14MouseClicked(evt);
-            }
-            public void mouseExited(java.awt.event.MouseEvent evt) {
-                jLabel14MouseExited(evt);
-            }
-        });
-        jPanel2.add(jLabel14, new org.netbeans.lib.awtextra.AbsoluteConstraints(710, 10, 30, -1));
-
-        jLabel15.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/icons8_Expand_Arrow_32px.png"))); // NOI18N
-        jLabel15.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
-        jLabel15.addMouseMotionListener(new java.awt.event.MouseMotionAdapter() {
-            public void mouseMoved(java.awt.event.MouseEvent evt) {
-                jLabel15MouseMoved(evt);
-            }
-        });
-        jLabel15.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                jLabel15MouseClicked(evt);
-            }
-            public void mouseExited(java.awt.event.MouseEvent evt) {
-                jLabel15MouseExited(evt);
-            }
-        });
-        jPanel2.add(jLabel15, new org.netbeans.lib.awtextra.AbsoluteConstraints(670, 10, 30, 30));
-
-        getContentPane().add(jPanel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(290, 0, 760, 50));
+        getContentPane().add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(290, 0, 760, 580));
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jLabel15MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel15MouseClicked
-        this.setState(IniciarSesion.ICONIFIED);
-    }//GEN-LAST:event_jLabel15MouseClicked
-
-    private void jLabel14MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel14MouseClicked
-        int dialog = JOptionPane.YES_NO_OPTION;
-        int result = JOptionPane.showConfirmDialog(null, "Exit?", "Exit", dialog);
-        if (result == 0) {
-            System.exit(0);
-        }
-    }//GEN-LAST:event_jLabel14MouseClicked
-
-    private void jLabel15MouseMoved(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel15MouseMoved
-        jLabel15.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 153)));
-    }//GEN-LAST:event_jLabel15MouseMoved
-
-    private void jLabel15MouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel15MouseExited
-        jLabel15.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(255, 255, 255)));
-    }//GEN-LAST:event_jLabel15MouseExited
-
-    private void jLabel14MouseMoved(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel14MouseMoved
-        jLabel14.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 153)));
-    }//GEN-LAST:event_jLabel14MouseMoved
-
-    private void jLabel14MouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel14MouseExited
-        jLabel14.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(255, 255, 255)));
-    }//GEN-LAST:event_jLabel14MouseExited
-
     private void jLabel9MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel9MouseClicked
         // Debo quitar estos comentarios
-        Register registro = new Register();
+        Register registro = new Register(client);
         dispose();
         registro.setVisible(true);
     }//GEN-LAST:event_jLabel9MouseClicked
@@ -298,6 +242,11 @@ public class IniciarSesion extends javax.swing.JFrame {
 
     private void ButtonLoginMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_ButtonLoginMouseClicked
 
+    }//GEN-LAST:event_ButtonLoginMouseClicked
+
+    private void ButtonLoginActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ButtonLoginActionPerformed
+        // TODO add your handling code here:
+
         if (Nickname.getText().length() == 0 || Password.getPassword().length == 0) {
             JOptionPane.showMessageDialog(this, "Uno de los campos esta vacio");
         } else {
@@ -306,21 +255,22 @@ public class IniciarSesion extends javax.swing.JFrame {
                 client.dos.writeUTF(Nickname.getText());
                 client.dos.writeUTF(String.valueOf(Password.getPassword()));
 
-                Boolean successful = client.dis.readBoolean();
+                if (client.dis.readBoolean()) {
+                    GameUser gameUser = new GameUser(client.dis.readUTF());
+                    int dialog = JOptionPane.INFORMATION_MESSAGE;
+                    JOptionPane.showMessageDialog(null, "Bienvenido", "Inicio de sesión", dialog);
 
-                if (successful) {
-                    Dashboard dash = new Dashboard(client);
+                    Dashboard dash = new Dashboard(client, gameUser);
                     dispose();
                     dash.setVisible(true);
+                } else {
+                    int dialog = JOptionPane.ERROR_MESSAGE;
+                    JOptionPane.showMessageDialog(null, "Usuario o contraseña incorrectos", "Error", dialog);
                 }
             } catch (IOException ex) {
                 ex.printStackTrace();
             }
         }
-    }//GEN-LAST:event_ButtonLoginMouseClicked
-
-    private void ButtonLoginActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ButtonLoginActionPerformed
-        // TODO add your handling code here:
     }//GEN-LAST:event_ButtonLoginActionPerformed
 
     /**
@@ -351,9 +301,11 @@ public class IniciarSesion extends javax.swing.JFrame {
         //</editor-fold>
 
         /* Create and display the form */
+ /*
         java.awt.EventQueue.invokeLater(() -> {
             new IniciarSesion().setVisible(true);
         });
+         */
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -365,8 +317,6 @@ public class IniciarSesion extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel12;
     private javax.swing.JLabel jLabel13;
-    private javax.swing.JLabel jLabel14;
-    private javax.swing.JLabel jLabel15;
     private javax.swing.JLabel jLabel16;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
@@ -377,7 +327,6 @@ public class IniciarSesion extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
     private javax.swing.JPanel jPanel1;
-    private javax.swing.JPanel jPanel2;
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JSeparator jSeparator2;
     private javax.swing.JPanel jpInicio;

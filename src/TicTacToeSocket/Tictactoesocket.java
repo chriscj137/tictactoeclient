@@ -7,6 +7,8 @@ package TicTacToeSocket;
 
 import Frame.IniciarSesion;
 import Socket.Client;
+import com.sun.glass.events.WindowEvent;
+import java.awt.event.WindowAdapter;
 import java.io.IOException;
 import java.net.InetAddress;
 

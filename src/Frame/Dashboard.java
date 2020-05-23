@@ -9,8 +9,18 @@ import Socket.Client;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.JOptionPane;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
+import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
+import tictactoe.Models.GameUser;
 
 /**
  *
@@ -19,14 +29,20 @@ import javax.swing.table.TableCellRenderer;
 public class Dashboard extends javax.swing.JFrame {
 
     private final Client client;
+    private final GameUser gameUser;
+
+    private final ArrayList<GameUser> connectedGameUsers;
 
     /**
      * Creates new form Dashboard
      *
      * @param client
+     * @param gameUser
      */
-    public Dashboard(Client client) {
+    public Dashboard(Client client, GameUser gameUser) throws IOException {
         this.client = client;
+        this.gameUser = gameUser;
+        connectedGameUsers = new ArrayList<>();
 
         initComponents();
         TableCellRenderer baseRenderer = jTable1.getTableHeader().getDefaultRenderer();
@@ -37,6 +53,7 @@ public class Dashboard extends javax.swing.JFrame {
         jTable1.getTableHeader().setForeground(new Color(118, 117, 116));
         jTable1.getTableHeader().setPreferredSize(new Dimension(jTable1.getWidth(), 60));
         jTable1.setRowHeight(60);
+        jTable1.setRowSelectionAllowed(false);
 
         baseRenderer = jTable2.getTableHeader().getDefaultRenderer();
         jTable2.getTableHeader().setDefaultRenderer(new TableHeaderRenderer(baseRenderer));
@@ -47,6 +64,43 @@ public class Dashboard extends javax.swing.JFrame {
         jTable2.getTableHeader().setPreferredSize(new Dimension(jTable2.getWidth(), 60));
         jTable2.setRowHeight(60);
 
+        DefaultTableModel dtm = new DefaultTableModel();
+        dtm.addColumn("Jugador");
+        jTable1.setModel(dtm);
+
+        this.addWindowListener(new WindowAdapter() {
+            public void windowClosing(WindowEvent e) {
+                int dialog = JOptionPane.YES_NO_OPTION;
+                int result = JOptionPane.showConfirmDialog(null, "Exit?", "Exit", dialog);
+                if (result == 0) {
+                    try {
+                        client.dos.writeUTF("exit");
+                    } catch (IOException ex) {
+                        ex.printStackTrace();
+                    }
+                    System.exit(0);
+                }
+            }
+        });
+        getUsersConnected();
+        jTable1.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+            @Override
+            public void valueChanged(ListSelectionEvent e) {
+                int selectedRow = jTable1.getSelectedRow();
+                if (selectedRow >= 0 && !e.getValueIsAdjusting()) {
+                    try {
+                        client.dos.writeUTF("duel");
+                        client.dos.writeUTF(connectedGameUsers.get(selectedRow).toString());
+
+                        SelectPlayer sp = new SelectPlayer();
+                        sp.setVisible(true);
+
+                    } catch (IOException ex) {
+                        Logger.getLogger(Dashboard.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
+            }
+        });
         //getHistory();
     }
 
@@ -62,6 +116,35 @@ public class Dashboard extends javax.swing.JFrame {
         } catch (IOException ex) {
             System.out.println("LOL");
         }
+    }
+
+    private void getUsersConnected() throws IOException {
+        client.dos.writeUTF("allGUCon");
+        connectedGameUsers.clear();
+
+        DefaultTableModel dtm = new DefaultTableModel() {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false;
+            }
+        };
+
+        dtm.addColumn("Jugador");
+
+        int value = client.dis.readInt();
+
+        for (int i = 0; i < value; i++) {
+            GameUser gu = new GameUser(client.dis.readUTF());
+            if (gu.idUser != gameUser.idUser) {
+                connectedGameUsers.add(gu);
+            }
+        }
+
+        for (GameUser gu : connectedGameUsers) {
+            dtm.addRow(new Object[]{gu.username});
+        }
+
+        jTable1.setModel(dtm);
     }
 
     /**
@@ -86,7 +169,9 @@ public class Dashboard extends javax.swing.JFrame {
         jLabel3 = new javax.swing.JLabel();
         jPanel6 = new javax.swing.JPanel();
         jPanel4 = new javax.swing.JPanel();
+        jLabel15 = new javax.swing.JLabel();
         jLabel9 = new javax.swing.JLabel();
+        jLabel16 = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
         jTable1 = new javax.swing.JTable();
         jPanel3 = new javax.swing.JPanel();
@@ -168,12 +253,48 @@ public class Dashboard extends javax.swing.JFrame {
         jPanel4.setBackground(new java.awt.Color(255, 255, 255));
         jPanel4.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
+        jLabel15.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/icons8_Search_32px.png"))); // NOI18N
+        jLabel15.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
+        jLabel15.setMaximumSize(new java.awt.Dimension(32, 32));
+        jLabel15.setMinimumSize(new java.awt.Dimension(32, 32));
+        jLabel15.addMouseMotionListener(new java.awt.event.MouseMotionAdapter() {
+            public void mouseMoved(java.awt.event.MouseEvent evt) {
+                jLabel15MouseMoved(evt);
+            }
+        });
+        jLabel15.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jLabel15MouseClicked(evt);
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                jLabel15MouseExited(evt);
+            }
+        });
+        jPanel4.add(jLabel15, new org.netbeans.lib.awtextra.AbsoluteConstraints(210, 0, 30, 40));
+
         jLabel9.setBackground(new java.awt.Color(255, 255, 255));
         jLabel9.setFont(new java.awt.Font("Leelawadee UI", 0, 18)); // NOI18N
         jLabel9.setForeground(new java.awt.Color(48, 46, 43));
         jLabel9.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel9.setText("Jugadores conectados");
         jPanel4.add(jLabel9, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 200, 40));
+
+        jLabel16.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/reload.png"))); // NOI18N
+        jLabel16.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
+        jLabel16.addMouseMotionListener(new java.awt.event.MouseMotionAdapter() {
+            public void mouseMoved(java.awt.event.MouseEvent evt) {
+                jLabel16MouseMoved(evt);
+            }
+        });
+        jLabel16.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jLabel16MouseClicked(evt);
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                jLabel16MouseExited(evt);
+            }
+        });
+        jPanel4.add(jLabel16, new org.netbeans.lib.awtextra.AbsoluteConstraints(240, 0, 30, 40));
 
         jPanel6.add(jPanel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(15, 15, 271, 40));
 
@@ -295,6 +416,45 @@ public class Dashboard extends javax.swing.JFrame {
         select.setVisible(true);
     }//GEN-LAST:event_jLabel8MouseClicked
 
+    private void jLabel15MouseMoved(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel15MouseMoved
+        jLabel15.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 153)));
+    }//GEN-LAST:event_jLabel15MouseMoved
+
+    private void jLabel15MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel15MouseClicked
+        try {
+            if (client.dis.readUTF().equals("challenged")) {
+                GameUser gu = new GameUser(client.dis.readUTF());
+                SelectPlayer sp = new SelectPlayer();
+                sp.setVisible(true);
+            }
+        } catch (IOException ex) {
+            int dialog = JOptionPane.INFORMATION_MESSAGE;
+            JOptionPane.showMessageDialog(null, "No tienes retos disponibles", "Duelo", dialog);
+        }
+    }//GEN-LAST:event_jLabel15MouseClicked
+
+    private void jLabel15MouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel15MouseExited
+        jLabel15.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(255, 255, 255)));
+    }//GEN-LAST:event_jLabel15MouseExited
+
+    private void jLabel16MouseMoved(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel16MouseMoved
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jLabel16MouseMoved
+
+    private void jLabel16MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel16MouseClicked
+        // TODO add your handling code here:
+        try {
+            getUsersConnected();
+        } catch (IOException ex) {
+            Logger.getLogger(Dashboard.class
+                    .getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_jLabel16MouseClicked
+
+    private void jLabel16MouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel16MouseExited
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jLabel16MouseExited
+
     /**
      * @param args the command line arguments
      */
@@ -309,16 +469,24 @@ public class Dashboard extends javax.swing.JFrame {
                 if ("Nimbus".equals(info.getName())) {
                     javax.swing.UIManager.setLookAndFeel(info.getClassName());
                     break;
+
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(Dashboard.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(Dashboard.class
+                    .getName()).log(java.util.logging.Level.SEVERE, null, ex);
+
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(Dashboard.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(Dashboard.class
+                    .getName()).log(java.util.logging.Level.SEVERE, null, ex);
+
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(Dashboard.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(Dashboard.class
+                    .getName()).log(java.util.logging.Level.SEVERE, null, ex);
+
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(Dashboard.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(Dashboard.class
+                    .getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
 
@@ -336,6 +504,8 @@ public class Dashboard extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
+    private javax.swing.JLabel jLabel15;
+    private javax.swing.JLabel jLabel16;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;

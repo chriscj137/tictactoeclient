@@ -16,12 +16,13 @@ public class SelectPlayer extends javax.swing.JFrame {
 
     private char player;
     private boolean turn;
+
     /**
      * Creates new form SelectPlayer
      */
     public SelectPlayer() {
         initComponents();
-        
+
         player = 'X';
         turn = true;
         jRadioButton1.setSelected(turn);
@@ -138,22 +139,22 @@ public class SelectPlayer extends javax.swing.JFrame {
 
     private void square1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_square1MouseClicked
         // TODO add your handling code here:
-        square1.setBorder(BorderFactory.createLineBorder(new Color(255,99,71)));
-        square2.setBorder(BorderFactory.createLineBorder(new Color(242,242,242)));
+        square1.setBorder(BorderFactory.createLineBorder(new Color(255, 99, 71)));
+        square2.setBorder(BorderFactory.createLineBorder(new Color(242, 242, 242)));
         player = 'O';
     }//GEN-LAST:event_square1MouseClicked
 
     private void square2MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_square2MouseClicked
         // TODO add your handling code here:
-        square2.setBorder(BorderFactory.createLineBorder(new Color(255,99,71)));
-        square1.setBorder(BorderFactory.createLineBorder(new Color(242,242,242)));
+        square2.setBorder(BorderFactory.createLineBorder(new Color(255, 99, 71)));
+        square1.setBorder(BorderFactory.createLineBorder(new Color(242, 242, 242)));
         player = 'X';
     }//GEN-LAST:event_square2MouseClicked
 
     private void jLabel1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel1MouseClicked
         // TODO add your handling code here:
         turn = jRadioButton1.isSelected();
-        
+
         GameGraphics game = new GameGraphics(false, player, "Angel", "Computer", turn);
         dispose();
         game.setVisible(true);
@@ -166,7 +167,7 @@ public class SelectPlayer extends javax.swing.JFrame {
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
         /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
+         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html
          */
         try {
             for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {

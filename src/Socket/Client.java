@@ -26,6 +26,6 @@ public class Client {
         socket = new Socket(ip, port);
         dos = new DataOutputStream(socket.getOutputStream());
         dis = new DataInputStream(socket.getInputStream());
-        socket.setSoTimeout(3 * 1000);
+        socket.setSoTimeout(1 * 1000);
     }
 }
