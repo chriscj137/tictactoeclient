@@ -8,7 +8,15 @@ package Frame;
 import Play.Game;
 import Play.Bot;
 import Play.Move;
+import Socket.Client;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.io.IOException;
+import java.net.SocketException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JOptionPane;
+import tictactoe.Models.GameUser;
 
 /**
  *
@@ -24,123 +32,229 @@ public class GameGraphics extends javax.swing.JFrame {
     private boolean turn;
     private Game game = new Game();
     private Bot bot;
-    
-    private String PlayerX;
-    private String PlayerO;
-    
-    public GameGraphics()
-    {
+
+    private GameUser PlayerX;
+    private GameUser PlayerO;
+    private Client client;
+
+    public GameGraphics() {
         player = 'X';
         bot = new Bot('O');
         turn = true;
     }
-    
+
     /**
      * Create new form game
+     *
      * @param isOnLine Indicates if the play is against a computer or a human
      * @param player Indicates if player plays with X or O
      * @param turn Indicates if it turn of this player or not
      */
-    public GameGraphics(boolean isOnLine, char player, String PlayerX, String PlayerO, boolean turn) 
-    {
+    public GameGraphics(boolean isOnLine, char player, GameUser PlayerX, GameUser PlayerO, boolean turn) throws IOException {
         initComponents();
         this.player = player;
         this.PlayerX = PlayerX;
         this.PlayerO = PlayerO;
         this.isOnLine = isOnLine;
         this.turn = turn;
-        
+
         initWindow();
-        
+
         if (!isOnLine) {
             initBot();
         }
     }
-    
-    private void initWindow() 
-    {
-        jLabel14.setText(PlayerX);
-        jLabel16.setText(PlayerO);
-    }
-    
-    private void setTurnText()
-    { 
-        if (turn) {
-            jLabel12.setText("Your Turn");
-        } else 
-        {
-            if (player == 'X') 
-            {
-                jLabel12.setText(PlayerO + "'s Turn");
-            } else 
-            {
-                jLabel12.setText(PlayerX + "'s Turn");
-            }
+
+    public GameGraphics(boolean isOnLine, char player, GameUser PlayerX, GameUser PlayerO, boolean turn, Client client) throws SocketException, IOException {
+        initComponents();
+        this.player = player;
+        this.PlayerX = PlayerX;
+        this.PlayerO = PlayerO;
+        this.isOnLine = isOnLine;
+        this.turn = turn;
+        this.client = client;
+        client.socket.setSoTimeout(0);
+
+        initWindow();
+
+        if (!isOnLine) {
+            initBot();
         }
-    }
-    
-    private void initBot() {
-        if (player == 'X')
-            bot = new Bot('O');
-        else
-            bot = new Bot('X');
-        
+
+        this.addWindowListener(new WindowAdapter() {
+            public void windowClosing(WindowEvent e) {
+                int dialog = JOptionPane.YES_NO_OPTION;
+                int result = JOptionPane.showConfirmDialog(null, "Exit?", "Exit", dialog);
+                if (result == 0) {
+                    try {
+                        client.dos.writeUTF("exit");
+                    } catch (IOException ex) {
+                        ex.printStackTrace();
+                    }
+                    System.exit(0);
+                }
+            }
+        });
+
         if (!turn) {
             getMove();
         }
     }
-    
-    public void getMove() {   
+
+    private void initWindow() {
+        jLabel14.setText(PlayerX.username);
+        jLabel16.setText(PlayerO.username);
+    }
+
+    private void setTurnText() {
+        if (turn) {
+            jLabel12.setText("Your Turn");
+        } else {
+            if (player == 'X') {
+                jLabel12.setText(PlayerO.username + "'s Turn");
+            } else {
+                jLabel12.setText(PlayerX.username + "'s Turn");
+            }
+        }
+    }
+
+    private void initBot() throws IOException {
+        if (player == 'X') {
+            bot = new Bot('O');
+        } else {
+            bot = new Bot('X');
+        }
+
+        if (!turn) {
+            getMove();
+        }
+    }
+
+    public void getMove() throws IOException {
         String resource = "/Images/cross.png";
         Move move = new Move();
-        
+
         if (!isOnLine) {
             move = bot.findBestMove(game);
             game.move(move.getRow(), move.getCol(), bot.getPlayer());
-        
-            if (bot.getPlayer() == 'X')
+
+            if (bot.getPlayer() == 'X') {
                 resource = "/Images/cross.png";
-            else
+            } else {
                 resource = "/Images/circle.png";
+            }
+
+            if (move.getRow() == 0 && move.getCol() == 0) {
+                square0.setIcon(new javax.swing.ImageIcon(getClass().getResource(resource)));
+            }
+            if (move.getRow() == 0 && move.getCol() == 1) {
+                square1.setIcon(new javax.swing.ImageIcon(getClass().getResource(resource)));
+            }
+            if (move.getRow() == 0 && move.getCol() == 2) {
+                square2.setIcon(new javax.swing.ImageIcon(getClass().getResource(resource)));
+            }
+            if (move.getRow() == 1 && move.getCol() == 0) {
+                square3.setIcon(new javax.swing.ImageIcon(getClass().getResource(resource)));
+            }
+            if (move.getRow() == 1 && move.getCol() == 1) {
+                square4.setIcon(new javax.swing.ImageIcon(getClass().getResource(resource)));
+            }
+            if (move.getRow() == 1 && move.getCol() == 2) {
+                square5.setIcon(new javax.swing.ImageIcon(getClass().getResource(resource)));
+            }
+            if (move.getRow() == 2 && move.getCol() == 0) {
+                square6.setIcon(new javax.swing.ImageIcon(getClass().getResource(resource)));
+            }
+            if (move.getRow() == 2 && move.getCol() == 1) {
+                square7.setIcon(new javax.swing.ImageIcon(getClass().getResource(resource)));
+            }
+            if (move.getRow() == 2 && move.getCol() == 2) {
+                square8.setIcon(new javax.swing.ImageIcon(getClass().getResource(resource)));
+            }
+        } else {
+            String s = client.dis.readUTF();
+            int x = client.dis.readInt();
+            int y = client.dis.readInt();
+
+            if (s.equals("PutX")) {
+                resource = "/Images/cross.png";
+                if (x == 0 && y == 0) {
+                    square0.setIcon(new javax.swing.ImageIcon(getClass().getResource(resource)));
+                }
+                if (x == 0 && y == 1) {
+                    square1.setIcon(new javax.swing.ImageIcon(getClass().getResource(resource)));
+                }
+                if (x == 0 && y == 2) {
+                    square2.setIcon(new javax.swing.ImageIcon(getClass().getResource(resource)));
+                }
+                if (x == 1 && y == 0) {
+                    square3.setIcon(new javax.swing.ImageIcon(getClass().getResource(resource)));
+                }
+                if (x == 1 && y == 1) {
+                    square4.setIcon(new javax.swing.ImageIcon(getClass().getResource(resource)));
+                }
+                if (x == 1 && y == 2) {
+                    square5.setIcon(new javax.swing.ImageIcon(getClass().getResource(resource)));
+                }
+                if (x == 2 && y == 0) {
+                    square6.setIcon(new javax.swing.ImageIcon(getClass().getResource(resource)));
+                }
+                if (x == 2 && y == 1) {
+                    square7.setIcon(new javax.swing.ImageIcon(getClass().getResource(resource)));
+                }
+                if (x == 2 && y == 2) {
+                    square8.setIcon(new javax.swing.ImageIcon(getClass().getResource(resource)));
+                }
+            } else if (s.equals("PutO")) {
+                resource = "/Images/circle.png";
+                if (x == 0 && y == 0) {
+                    square0.setIcon(new javax.swing.ImageIcon(getClass().getResource(resource)));
+                }
+                if (x == 0 && y == 1) {
+                    square1.setIcon(new javax.swing.ImageIcon(getClass().getResource(resource)));
+                }
+                if (x == 0 && y == 2) {
+                    square2.setIcon(new javax.swing.ImageIcon(getClass().getResource(resource)));
+                }
+                if (x == 1 && y == 0) {
+                    square3.setIcon(new javax.swing.ImageIcon(getClass().getResource(resource)));
+                }
+                if (x == 1 && y == 1) {
+                    square4.setIcon(new javax.swing.ImageIcon(getClass().getResource(resource)));
+                }
+                if (x == 1 && y == 2) {
+                    square5.setIcon(new javax.swing.ImageIcon(getClass().getResource(resource)));
+                }
+                if (x == 2 && y == 0) {
+                    square6.setIcon(new javax.swing.ImageIcon(getClass().getResource(resource)));
+                }
+                if (x == 2 && y == 1) {
+                    square7.setIcon(new javax.swing.ImageIcon(getClass().getResource(resource)));
+                }
+                if (x == 2 && y == 2) {
+                    square8.setIcon(new javax.swing.ImageIcon(getClass().getResource(resource)));
+                }
+            }
         }
 
-        
-        if (move.getRow() == 0 && move.getCol() == 0) square0.setIcon(new javax.swing.ImageIcon(getClass().getResource(resource)));
-        if (move.getRow() == 0 && move.getCol() == 1) square1.setIcon(new javax.swing.ImageIcon(getClass().getResource(resource)));
-        if (move.getRow() == 0 && move.getCol() == 2) square2.setIcon(new javax.swing.ImageIcon(getClass().getResource(resource)));
-        if (move.getRow() == 1 && move.getCol() == 0) square3.setIcon(new javax.swing.ImageIcon(getClass().getResource(resource)));
-        if (move.getRow() == 1 && move.getCol() == 1) square4.setIcon(new javax.swing.ImageIcon(getClass().getResource(resource)));
-        if (move.getRow() == 1 && move.getCol() == 2) square5.setIcon(new javax.swing.ImageIcon(getClass().getResource(resource)));
-        if (move.getRow() == 2 && move.getCol() == 0) square6.setIcon(new javax.swing.ImageIcon(getClass().getResource(resource)));
-        if (move.getRow() == 2 && move.getCol() == 1) square7.setIcon(new javax.swing.ImageIcon(getClass().getResource(resource)));
-        if (move.getRow() == 2 && move.getCol() == 2) square8.setIcon(new javax.swing.ImageIcon(getClass().getResource(resource)));
-        
         evaluateGame();
-        
+
         turn = true;
         setTurnText();
     }
-    
-    public void evaluateGame() 
-    {
-        if (game.evaluation() != 0 || game.isOver()) 
-        {
-            if (game.evaluation() == -1)
-            {
-                if (player == 'O') 
-                {
+
+    public void evaluateGame() {
+        if (game.evaluation() != 0 || game.isOver()) {
+            if (game.evaluation() == -1) {
+                if (player == 'O') {
                     JOptionPane.showMessageDialog(this, "Ganaste");
-                } else 
-                {
+                } else {
                     JOptionPane.showMessageDialog(this, "Perdiste");
                 }
-            } else if (game.evaluation() == 1)
-            {
-                if (player == 'X') 
-                {
+            } else if (game.evaluation() == 1) {
+                if (player == 'X') {
                     JOptionPane.showMessageDialog(this, "Ganaste");
-                } else 
-                {
+                } else {
                     JOptionPane.showMessageDialog(this, "Perdiste");
                 }
             } else if (game.isOver() && (game.evaluation() != 1 && game.evaluation() != -1)) {
@@ -394,182 +508,381 @@ public class GameGraphics extends javax.swing.JFrame {
 
     private void square0MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_square0MouseClicked
 
-        if (game.isEmpty(0, 0) && turn)  
-        {
+        if (game.isEmpty(0, 0) && turn) {
             game.move(0, 0, player);
-            
-            if (player == 'O') 
-            {
+
+            if (player == 'O') {
                 square0.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/circle.png")));
+                if (isOnLine) {
+                    try {
+                        client.dos.writeUTF("SetO");
+                        client.dos.writeUTF(PlayerX.toString());
+                        client.dos.writeInt(0);
+                        client.dos.writeInt(0);
+                    } catch (IOException ex) {
+                        Logger.getLogger(GameGraphics.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
             } else {
                 square0.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/cross.png")));
+                if (isOnLine) {
+                    try {
+                        client.dos.writeUTF("SetX");
+                        client.dos.writeUTF(PlayerO.toString());
+                        client.dos.writeInt(0);
+                        client.dos.writeInt(0);
+                    } catch (IOException ex) {
+                        Logger.getLogger(GameGraphics.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
             }
-            
+
             turn = false;
             setTurnText();
             evaluateGame();
-            getMove();
+            try {
+                getMove();
+            } catch (IOException ex) {
+                Logger.getLogger(GameGraphics.class.getName()).log(Level.SEVERE, null, ex);
+            }
+
         }
-        
+
     }//GEN-LAST:event_square0MouseClicked
 
     private void square1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_square1MouseClicked
         // TODO add your handling code here:
-        if (game.isEmpty(0, 1) && turn)  
-        {
+        if (game.isEmpty(0, 1) && turn) {
             game.move(0, 1, player);
-            
-            if (player == 'O') 
-            {
+
+            if (player == 'O') {
                 square1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/circle.png")));
+                if (isOnLine) {
+                    try {
+                        client.dos.writeUTF("SetO");
+                        client.dos.writeUTF(PlayerX.toString());
+                        client.dos.writeInt(0);
+                        client.dos.writeInt(1);
+                    } catch (IOException ex) {
+                        Logger.getLogger(GameGraphics.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
             } else {
                 square1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/cross.png")));
+                if (isOnLine) {
+                    try {
+                        client.dos.writeUTF("SetX");
+                        client.dos.writeUTF(PlayerO.toString());
+                        client.dos.writeInt(0);
+                        client.dos.writeInt(1);
+                    } catch (IOException ex) {
+                        Logger.getLogger(GameGraphics.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
             }
-            
+
             turn = false;
             setTurnText();
             evaluateGame();
-            getMove();
+            try {
+                getMove();
+            } catch (IOException ex) {
+                Logger.getLogger(GameGraphics.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
     }//GEN-LAST:event_square1MouseClicked
 
     private void square2MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_square2MouseClicked
         // TODO add your handling code here:
-        if (game.isEmpty(0, 2) && turn)  
-        {
+        if (game.isEmpty(0, 2) && turn) {
             game.move(0, 2, player);
-            
-            if (player == 'O') 
-            {
+
+            if (player == 'O') {
                 square2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/circle.png")));
+                if (isOnLine) {
+                    try {
+                        client.dos.writeUTF("SetO");
+                        client.dos.writeUTF(PlayerX.toString());
+                        client.dos.writeInt(0);
+                        client.dos.writeInt(2);
+                    } catch (IOException ex) {
+                        Logger.getLogger(GameGraphics.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
             } else {
                 square2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/cross.png")));
+                if (isOnLine) {
+                    try {
+                        client.dos.writeUTF("SetX");
+                        client.dos.writeUTF(PlayerO.toString());
+                        client.dos.writeInt(0);
+                        client.dos.writeInt(2);
+                    } catch (IOException ex) {
+                        Logger.getLogger(GameGraphics.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
             }
-            
+
             turn = false;
             setTurnText();
             evaluateGame();
-            getMove();
+            try {
+                getMove();
+            } catch (IOException ex) {
+                Logger.getLogger(GameGraphics.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
     }//GEN-LAST:event_square2MouseClicked
 
     private void square3MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_square3MouseClicked
         // TODO add your handling code here:
-        if (game.isEmpty(1, 0) && turn)  
-        {
+        if (game.isEmpty(1, 0) && turn) {
             game.move(1, 0, player);
-            
-            if (player == 'O') 
-            {
+
+            if (player == 'O') {
                 square3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/circle.png")));
+                if (isOnLine) {
+                    try {
+                        client.dos.writeUTF("SetO");
+                        client.dos.writeUTF(PlayerX.toString());
+                        client.dos.writeInt(1);
+                        client.dos.writeInt(0);
+                    } catch (IOException ex) {
+                        Logger.getLogger(GameGraphics.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
             } else {
                 square3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/cross.png")));
+                if (isOnLine) {
+                    try {
+                        client.dos.writeUTF("SetX");
+                        client.dos.writeUTF(PlayerO.toString());
+                        client.dos.writeInt(1);
+                        client.dos.writeInt(0);
+                    } catch (IOException ex) {
+                        Logger.getLogger(GameGraphics.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
             }
-            
+
             turn = false;
             setTurnText();
             evaluateGame();
-            getMove();
+            try {
+                getMove();
+            } catch (IOException ex) {
+                Logger.getLogger(GameGraphics.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
     }//GEN-LAST:event_square3MouseClicked
 
     private void square4MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_square4MouseClicked
         // TODO add your handling code here:
-        if (game.isEmpty(1, 1) && turn)  
-        {
+        if (game.isEmpty(1, 1) && turn) {
             game.move(1, 1, player);
-            
-            if (player == 'O') 
-            {
+
+            if (player == 'O') {
                 square4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/circle.png")));
+                if (isOnLine) {
+                    try {
+                        client.dos.writeUTF("SetO");
+                        client.dos.writeUTF(PlayerX.toString());
+                        client.dos.writeInt(1);
+                        client.dos.writeInt(1);
+                    } catch (IOException ex) {
+                        Logger.getLogger(GameGraphics.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
             } else {
                 square4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/cross.png")));
+                if (isOnLine) {
+                    try {
+                        client.dos.writeUTF("SetX");
+                        client.dos.writeUTF(PlayerO.toString());
+                        client.dos.writeInt(1);
+                        client.dos.writeInt(1);
+                    } catch (IOException ex) {
+                        Logger.getLogger(GameGraphics.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
             }
-            
+
             turn = false;
             setTurnText();
             evaluateGame();
-            getMove();
+            try {
+                getMove();
+            } catch (IOException ex) {
+                Logger.getLogger(GameGraphics.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
     }//GEN-LAST:event_square4MouseClicked
 
     private void square5MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_square5MouseClicked
         // TODO add your handling code here:
-        if (game.isEmpty(1, 2) && turn)  
-        {
+        if (game.isEmpty(1, 2) && turn) {
             game.move(1, 2, player);
-            
-            if (player == 'O') 
-            {
+
+            if (player == 'O') {
                 square5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/circle.png")));
+                if (isOnLine) {
+                    try {
+                        client.dos.writeUTF("SetO");
+                        client.dos.writeUTF(PlayerX.toString());
+                        client.dos.writeInt(1);
+                        client.dos.writeInt(2);
+                    } catch (IOException ex) {
+                        Logger.getLogger(GameGraphics.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
             } else {
                 square5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/cross.png")));
+                if (isOnLine) {
+                    try {
+                        client.dos.writeUTF("SetX");
+                        client.dos.writeUTF(PlayerO.toString());
+                        client.dos.writeInt(1);
+                        client.dos.writeInt(2);
+                    } catch (IOException ex) {
+                        Logger.getLogger(GameGraphics.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
             }
-            
+
             turn = false;
             setTurnText();
             evaluateGame();
-            getMove();
+            try {
+                getMove();
+            } catch (IOException ex) {
+                Logger.getLogger(GameGraphics.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
     }//GEN-LAST:event_square5MouseClicked
 
     private void square6MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_square6MouseClicked
         // TODO add your handling code here:
-        if (game.isEmpty(2, 0) && turn)  
-        {
+        if (game.isEmpty(2, 0) && turn) {
             game.move(2, 0, player);
-            
-            if (player == 'O') 
-            {
+
+            if (player == 'O') {
                 square6.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/circle.png")));
+                if (isOnLine) {
+                    try {
+                        client.dos.writeUTF("SetO");
+                        client.dos.writeUTF(PlayerX.toString());
+                        client.dos.writeInt(2);
+                        client.dos.writeInt(0);
+                    } catch (IOException ex) {
+                        Logger.getLogger(GameGraphics.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
             } else {
                 square6.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/cross.png")));
+                if (isOnLine) {
+                    try {
+                        client.dos.writeUTF("SetX");
+                        client.dos.writeUTF(PlayerO.toString());
+                        client.dos.writeInt(2);
+                        client.dos.writeInt(0);
+                    } catch (IOException ex) {
+                        Logger.getLogger(GameGraphics.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
             }
-            
+
             turn = false;
             setTurnText();
             evaluateGame();
-            getMove();
+            try {
+                getMove();
+            } catch (IOException ex) {
+                Logger.getLogger(GameGraphics.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
     }//GEN-LAST:event_square6MouseClicked
 
     private void square7MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_square7MouseClicked
         // TODO add your handling code here:
-        if (game.isEmpty(2, 1) && turn)  
-        {
+        if (game.isEmpty(2, 1) && turn) {
             game.move(2, 1, player);
-            
-            if (player == 'O') 
-            {
+
+            if (player == 'O') {
                 square7.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/circle.png")));
+                if (isOnLine) {
+                    try {
+                        client.dos.writeUTF("SetO");
+                        client.dos.writeUTF(PlayerX.toString());
+                        client.dos.writeInt(2);
+                        client.dos.writeInt(1);
+                    } catch (IOException ex) {
+                        Logger.getLogger(GameGraphics.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
             } else {
                 square7.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/cross.png")));
+                if (isOnLine) {
+                    try {
+                        client.dos.writeUTF("SetX");
+                        client.dos.writeUTF(PlayerO.toString());
+                        client.dos.writeInt(2);
+                        client.dos.writeInt(1);
+                    } catch (IOException ex) {
+                        Logger.getLogger(GameGraphics.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
             }
-            
+
             turn = false;
             setTurnText();
             evaluateGame();
-            getMove();
+            try {
+                getMove();
+            } catch (IOException ex) {
+                Logger.getLogger(GameGraphics.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
     }//GEN-LAST:event_square7MouseClicked
 
     private void square8MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_square8MouseClicked
         // TODO add your handling code here:
-        if (game.isEmpty(2, 2) && turn)  
-        {
+        if (game.isEmpty(2, 2) && turn) {
             game.move(2, 2, player);
-            
-            if (player == 'O') 
-            {
+
+            if (player == 'O') {
                 square8.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/circle.png")));
+                if (isOnLine) {
+                    try {
+                        client.dos.writeUTF("SetO");
+                        client.dos.writeUTF(PlayerX.toString());
+                        client.dos.writeInt(2);
+                        client.dos.writeInt(2);
+                    } catch (IOException ex) {
+                        Logger.getLogger(GameGraphics.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
             } else {
                 square8.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/cross.png")));
+                if (isOnLine) {
+                    try {
+                        client.dos.writeUTF("SetX");
+                        client.dos.writeUTF(PlayerO.toString());
+                        client.dos.writeInt(2);
+                        client.dos.writeInt(2);
+                    } catch (IOException ex) {
+                        Logger.getLogger(GameGraphics.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
             }
-            
+
             turn = false;
             setTurnText();
             evaluateGame();
-            getMove();
+            try {
+                getMove();
+            } catch (IOException ex) {
+                Logger.getLogger(GameGraphics.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
     }//GEN-LAST:event_square8MouseClicked
 

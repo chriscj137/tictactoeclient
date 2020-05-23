@@ -90,10 +90,15 @@ public class Dashboard extends javax.swing.JFrame {
                 if (selectedRow >= 0 && !e.getValueIsAdjusting()) {
                     try {
                         client.dos.writeUTF("duel");
-                        client.dos.writeUTF(connectedGameUsers.get(selectedRow).toString());
 
-                        SelectPlayer sp = new SelectPlayer();
-                        sp.setVisible(true);
+                        GameUser challenged = connectedGameUsers.get(selectedRow);
+                        client.dos.writeUTF(challenged.toString());
+
+                        client.socket.setSoTimeout(0);
+
+                        GameGraphics game = new GameGraphics(true, 'X', gameUser, challenged, true, client);
+                        dispose();
+                        game.setVisible(true);
 
                     } catch (IOException ex) {
                         Logger.getLogger(Dashboard.class.getName()).log(Level.SEVERE, null, ex);
@@ -412,7 +417,7 @@ public class Dashboard extends javax.swing.JFrame {
 
     private void jLabel8MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel8MouseClicked
         // TODO add your handling code here:
-        SelectPlayer select = new SelectPlayer();
+        SelectPlayer select = new SelectPlayer(gameUser, client);
         select.setVisible(true);
     }//GEN-LAST:event_jLabel8MouseClicked
 
@@ -424,8 +429,13 @@ public class Dashboard extends javax.swing.JFrame {
         try {
             if (client.dis.readUTF().equals("challenged")) {
                 GameUser gu = new GameUser(client.dis.readUTF());
-                SelectPlayer sp = new SelectPlayer();
-                sp.setVisible(true);
+                client.socket.setSoTimeout(0);
+                client.dos.writeUTF("challengeAccepted");
+                client.dos.writeUTF(gameUser.toString());
+
+                GameGraphics game = new GameGraphics(true, 'O', gu, gameUser, false, client);
+                dispose();
+                game.setVisible(true);
             }
         } catch (IOException ex) {
             int dialog = JOptionPane.INFORMATION_MESSAGE;

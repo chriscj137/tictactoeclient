@@ -5,8 +5,16 @@
  */
 package Frame;
 
+import Socket.Client;
 import java.awt.Color;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.BorderFactory;
+import javax.swing.JOptionPane;
+import tictactoe.Models.GameUser;
 
 /**
  *
@@ -16,16 +24,34 @@ public class SelectPlayer extends javax.swing.JFrame {
 
     private char player;
     private boolean turn;
+    private GameUser gameUser;
+    private Client client;
 
     /**
      * Creates new form SelectPlayer
      */
-    public SelectPlayer() {
+    public SelectPlayer(GameUser gameUser, Client client) {
         initComponents();
 
+        this.gameUser = gameUser;
         player = 'X';
         turn = true;
         jRadioButton1.setSelected(turn);
+        this.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                int dialog = JOptionPane.YES_NO_OPTION;
+                int result = JOptionPane.showConfirmDialog(null, "Exit?", "Exit", dialog);
+                if (result == 0) {
+                    try {
+                        client.dos.writeUTF("exit");
+                    } catch (IOException ex) {
+                        ex.printStackTrace();
+                    }
+                    System.exit(0);
+                }
+            }
+        });
     }
 
     /**
@@ -155,7 +181,12 @@ public class SelectPlayer extends javax.swing.JFrame {
         // TODO add your handling code here:
         turn = jRadioButton1.isSelected();
 
-        GameGraphics game = new GameGraphics(false, player, "Angel", "Computer", turn);
+        GameGraphics game = null;
+        try {
+            game = new GameGraphics(false, player, gameUser, new GameUser(1, "Computer"), turn);
+        } catch (IOException ex) {
+            Logger.getLogger(SelectPlayer.class.getName()).log(Level.SEVERE, null, ex);
+        }
         dispose();
         game.setVisible(true);
     }//GEN-LAST:event_jLabel1MouseClicked
@@ -188,11 +219,13 @@ public class SelectPlayer extends javax.swing.JFrame {
         //</editor-fold>
 
         /* Create and display the form */
+ /*
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
                 new SelectPlayer().setVisible(true);
             }
         });
+         */
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
