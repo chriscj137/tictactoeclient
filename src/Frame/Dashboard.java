@@ -101,21 +101,64 @@ public class Dashboard extends javax.swing.JFrame {
                 }
             }
         });
-        //getHistory();
+        jLabel1.setText(client.clientName);
+        getRecords();
     }
 
-    private void getHistory() {
-
+    private void getRecords() {
+        DefaultTableModel model = new DefaultTableModel();
+        int Ganaste=0, perdiste=0, empataste=0;
+        model.addColumn("Jugador X");
+        model.addColumn("Jugador O");
+        model.addColumn("Resultado");
+        
         try {
-            client.dos.writeUTF("history");
-            int amount = client.dis.readInt();
-            client.dos.writeBoolean(true);
-            for (int i = 0; i < amount; i++) {
-                System.out.println(client.dis.readUTF());
+            client.dos.writeUTF("record"); 
+            
+            int size = client.dis.readInt();
+            
+            for (int i = 0; i < size; ++i) {
+                String record = client.dis.readUTF();
+                String[] data = record.split("\n");
+                String res;
+                String space = "     ";
+                
+                if (data[3].equals("PlayerXWin")) {
+                    if (data[1].equals(client.clientName)) {
+                        res = "Ganaste";
+                        Ganaste++;
+                    } else {
+                        res = "Perdiste";
+                        perdiste++;
+                    }
+                } else if (data[3].equals("PlayerOWin")) {
+                    if (data[2].equals(client.clientName)) {
+                        res = "Ganaste";
+                        Ganaste++;
+                    } else {
+                        res = "Perdiste";
+                        perdiste++;
+                    }
+                } else {
+                    res = "Empate";
+                    empataste++;
+                }
+                
+                System.out.println(data[1]);
+                System.out.println(data[2]);
+                System.out.println(data[3]);
+                
+                model.addRow(new Object[]{space + data[1], space + data[2], space + res});
             }
+            jTable2.setModel(model);
+            jLabel7.setText(String.valueOf(Ganaste));
+            jLabel5.setText(String.valueOf(perdiste));
+            jLabel2.setText(String.valueOf(empataste));
+            
         } catch (IOException ex) {
-            System.out.println("LOL");
+            ex.printStackTrace();
         }
+        
     }
 
     private void getUsersConnected() throws IOException {
@@ -194,7 +237,6 @@ public class Dashboard extends javax.swing.JFrame {
 
         jLabel1.setFont(new java.awt.Font("Leelawadee UI", 0, 28)); // NOI18N
         jLabel1.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel1.setText("Angel33");
         jPanel5.add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(140, 20, 210, 70));
         jLabel1.getAccessibleContext().setAccessibleDescription("");
 
@@ -255,8 +297,6 @@ public class Dashboard extends javax.swing.JFrame {
 
         jLabel15.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/icons8_Search_32px.png"))); // NOI18N
         jLabel15.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
-        jLabel15.setMaximumSize(new java.awt.Dimension(32, 32));
-        jLabel15.setMinimumSize(new java.awt.Dimension(32, 32));
         jLabel15.addMouseMotionListener(new java.awt.event.MouseMotionAdapter() {
             public void mouseMoved(java.awt.event.MouseEvent evt) {
                 jLabel15MouseMoved(evt);
@@ -363,23 +403,18 @@ public class Dashboard extends javax.swing.JFrame {
         jTable2.setForeground(new java.awt.Color(94, 94, 94));
         jTable2.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {"     Angel33", "     Mauricio", "     Victoria"},
-                {"     Mauricio", "     Angel33", "     Empate"},
-                {"     Cris", "     Angel33", "    Empate"},
-                {"     Cris", "     Angel33", "     Derrota"},
-                {"     Angel33", "     Cris", "    Victoria"},
-                {"     Angel33", "     Mauricio", "    Derrota"}
+
             },
             new String [] {
                 "Jugador X", "Jugador O", "Resultado"
             }
         ) {
-            Class[] types = new Class [] {
-                java.lang.String.class, java.lang.String.class, java.lang.String.class
+            boolean[] canEdit = new boolean [] {
+                false, true, false
             };
 
-            public Class getColumnClass(int columnIndex) {
-                return types [columnIndex];
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
             }
         });
         jTable2.setFocusable(false);
