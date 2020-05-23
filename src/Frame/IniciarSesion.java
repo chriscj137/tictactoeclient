@@ -259,7 +259,7 @@ public class IniciarSesion extends javax.swing.JFrame {
                     GameUser gameUser = new GameUser(client.dis.readUTF());
                     int dialog = JOptionPane.INFORMATION_MESSAGE;
                     JOptionPane.showMessageDialog(null, "Bienvenido", "Inicio de sesión", dialog);
-
+                    client.clientName = Nickname.getText();
                     Dashboard dash = new Dashboard(client, gameUser);
                     dispose();
                     dash.setVisible(true);

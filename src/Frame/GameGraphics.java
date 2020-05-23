@@ -134,7 +134,7 @@ public class GameGraphics extends javax.swing.JFrame {
         String resource = "/Images/cross.png";
         Move move = new Move();
 
-        if (!isOnLine) {
+        if (!isOnLine && !game.isOver()) {
             move = bot.findBestMove(game);
             game.move(move.getRow(), move.getCol(), bot.getPlayer());
 
@@ -237,10 +237,40 @@ public class GameGraphics extends javax.swing.JFrame {
             }
         }
 
-        evaluateGame();
+        if (!game.isOver()) {
+            if (move.getRow() == 0 && move.getCol() == 0) {
+                square0.setIcon(new javax.swing.ImageIcon(getClass().getResource(resource)));
+            }
+            if (move.getRow() == 0 && move.getCol() == 1) {
+                square1.setIcon(new javax.swing.ImageIcon(getClass().getResource(resource)));
+            }
+            if (move.getRow() == 0 && move.getCol() == 2) {
+                square2.setIcon(new javax.swing.ImageIcon(getClass().getResource(resource)));
+            }
+            if (move.getRow() == 1 && move.getCol() == 0) {
+                square3.setIcon(new javax.swing.ImageIcon(getClass().getResource(resource)));
+            }
+            if (move.getRow() == 1 && move.getCol() == 1) {
+                square4.setIcon(new javax.swing.ImageIcon(getClass().getResource(resource)));
+            }
+            if (move.getRow() == 1 && move.getCol() == 2) {
+                square5.setIcon(new javax.swing.ImageIcon(getClass().getResource(resource)));
+            }
+            if (move.getRow() == 2 && move.getCol() == 0) {
+                square6.setIcon(new javax.swing.ImageIcon(getClass().getResource(resource)));
+            }
+            if (move.getRow() == 2 && move.getCol() == 1) {
+                square7.setIcon(new javax.swing.ImageIcon(getClass().getResource(resource)));
+            }
+            if (move.getRow() == 2 && move.getCol() == 2) {
+                square8.setIcon(new javax.swing.ImageIcon(getClass().getResource(resource)));
+            }
 
-        turn = true;
-        setTurnText();
+            evaluateGame();
+
+            turn = true;
+            setTurnText();
+        }
     }
 
     public void evaluateGame() {
