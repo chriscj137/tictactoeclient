@@ -49,6 +49,7 @@ public class Dashboard extends javax.swing.JFrame {
         jTable2.setRowHeight(60);
 
         getRecords();
+        getResults();
     }
     
     private void getRecords() {
@@ -98,6 +99,16 @@ public class Dashboard extends javax.swing.JFrame {
         }
         
     }
+    private void getResults(){
+        try{
+            client.dos.writeUTF("results");
+            String Ganadas;
+            Ganadas = client.dis.readUTF();
+            jLabel7.setText(Ganadas);
+        }catch(IOException ex){
+            ex.printStackTrace();
+        }
+    }
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -144,7 +155,7 @@ public class Dashboard extends javax.swing.JFrame {
 
         jLabel1.setFont(new java.awt.Font("Leelawadee UI", 0, 28)); // NOI18N
         jLabel1.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel1.setText("Angel33");
+        jLabel1.setText(client.clientName);
         jPanel5.add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(140, 20, 210, 70));
         jLabel1.getAccessibleContext().setAccessibleDescription("");
 
