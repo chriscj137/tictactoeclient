@@ -11,6 +11,7 @@ import java.awt.Dimension;
 import java.awt.Font;
 import javax.swing.table.TableCellRenderer;
 import java.io.IOException;
+import java.util.ArrayList;
 import javax.swing.table.DefaultTableModel;
 
 /**
@@ -54,7 +55,7 @@ public class Dashboard extends javax.swing.JFrame {
     
     private void getRecords() {
         DefaultTableModel model = new DefaultTableModel();
-        
+        int Ganaste=0, perdiste=0, empataste=0;
         model.addColumn("Jugador X");
         model.addColumn("Jugador O");
         model.addColumn("Resultado");
@@ -73,17 +74,22 @@ public class Dashboard extends javax.swing.JFrame {
                 if (data[3].equals("PlayerXWin")) {
                     if (data[1].equals(client.clientName)) {
                         res = "Ganaste";
+                        Ganaste++;
                     } else {
                         res = "Perdiste";
+                        perdiste++;
                     }
                 } else if (data[3].equals("PlayerOWin")) {
                     if (data[2].equals(client.clientName)) {
                         res = "Ganaste";
+                        Ganaste++;
                     } else {
                         res = "Perdiste";
+                        perdiste++;
                     }
                 } else {
                     res = "Empate";
+                    empataste++;
                 }
                 
                 System.out.println(data[1]);
@@ -93,22 +99,34 @@ public class Dashboard extends javax.swing.JFrame {
                 model.addRow(new Object[]{space + data[1], space + data[2], space + res});
             }
             jTable2.setModel(model);
+            jLabel7.setText(String.valueOf(Ganaste));
+            jLabel5.setText(String.valueOf(perdiste));
+            jLabel2.setText(String.valueOf(empataste));
             
         } catch (IOException ex) {
             ex.printStackTrace();
         }
         
     }
+    
     private void getResults(){
+        /*
         try{
             client.dos.writeUTF("results");
-            String Ganadas;
-            Ganadas = client.dis.readUTF();
-            jLabel7.setText(Ganadas);
+            ArrayList<String> Ganadas = new ArrayList<>();
+            for(int i=0;i<4;i++){
+                Ganadas.add(client.dis.readUTF());
+            }
+            jLabel7.setText(Ganadas.get(1));
+            jLabel5.setText(Ganadas.get(2));
+            jLabel2.setText(Ganadas.get(3));
+            
         }catch(IOException ex){
             ex.printStackTrace();
         }
+        */
     }
+    
 
     /**
      * This method is called from within the constructor to initialize the form.
